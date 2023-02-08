@@ -1,4 +1,3 @@
-import { Console } from "console";
 import fs from "fs";
 
 
@@ -36,7 +35,7 @@ export class CartManager {
             await fs.promises.writeFile(this.path, JSON.stringify(aux));
         }
     }
-    getProductById= async(id)=> {
+    existsProductById= async(id)=> { //Solamente para comprobar si existe
         let contenido = await fs.promises.readFile("src/models/products.json", 'utf-8')  
         let aux = JSON.parse(contenido)
         let valor=false;
@@ -53,16 +52,37 @@ export class CartManager {
         let contenido = await fs.promises.readFile(this.path, "utf-8");
         let carritos = JSON.parse(contenido);
         let index = carritos.findIndex(cart => cart.id ===idCart);
-        const existe = await this.getProductById(idProduct)
+        const existe = await this.existsProductById(idProduct)
+
+        //Productos para ver el stock maximo
+        let responseAwaitProducts = await fs.promises.readFile("src/models/products.json", 'utf-8')  
+        let arrayProductosFromJSON = JSON.parse(responseAwaitProducts);
+    
+
         if(carritos[index]){
             if (existe){
+
                 let aux = carritos[idCart-1].products;
                 let index = aux.findIndex(product => product.idProduct ===idProduct);
-        
+
+                let pos = arrayProductosFromJSON.findIndex(product => product.id === idProduct)
+                let productoJSON = arrayProductosFromJSON[pos];
                 if (index!=-1){
-                    carritos[idCart-1].products[index].quantity+=quantity;
-                }else{
-                    carritos[idCart-1].products.push({idProduct,quantity});
+                    if (productoJSON.stock>0 && productoJSON.stock >= carritos[idCart-1].products[index].quantity+quantity) //Controlo que no se exceda del stock maximo
+                    {
+                        carritos[idCart-1].products[index].quantity+=quantity;   
+                    }else{
+                        console.error("No hay stock suficiente")
+                    }
+                }
+                else
+                {
+                    if (productoJSON.stock>0 && productoJSON.stock >= quantity ) //Controlo que no se exceda del stock maximo
+                    {
+                        carritos[idCart-1].products.push({idProduct,quantity});
+                    }else{
+                        console.error("No hay stock suficiente")
+                    }
                 }
                 await fs.promises.writeFile(this.path, JSON.stringify(carritos));                
             }else{

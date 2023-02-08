@@ -105,7 +105,9 @@ export class ProductManager {
                     aux[pos].thumbnail = thumbnail;
                 }
             }
-            if (code!=undefined){
+            if (aux.some(prod => prod.code==code)){
+                console.error("No puede poner un codigo que ya existe")
+            }else if(code!=undefined){
                 if (code.length>0)
                 {
                     aux[pos].code = code;
