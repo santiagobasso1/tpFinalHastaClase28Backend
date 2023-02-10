@@ -28,11 +28,13 @@ export class CartManager {
             let carrito = new Cart(idAutoincremental, []);
             aux.push(carrito)
             await fs.promises.writeFile(this.path, JSON.stringify(aux));
+            return `Carrrito vacio creado con el id: ${idAutoincremental}`
         } else {
             const idAutoincremental = 1;
             let carrito = new Cart(idAutoincremental, []);
             aux.push(carrito)
             await fs.promises.writeFile(this.path, JSON.stringify(aux));
+            return `Carrrito vacio creado con el id: ${idAutoincremental}`
         }
     }
     existsProductById= async(id)=> { //Solamente para comprobar si existe
@@ -71,8 +73,10 @@ export class CartManager {
                     if (productoJSON.stock>0 && productoJSON.stock >= carritos[idCart-1].products[index].quantity+quantity) //Controlo que no se exceda del stock maximo
                     {
                         carritos[idCart-1].products[index].quantity+=quantity;   
+                        await fs.promises.writeFile(this.path, JSON.stringify(carritos));                
+                        return "Item agregado al carrito"
                     }else{
-                        console.error("No hay stock suficiente")
+                        return "No hay stock suficiente"
                     }
                 }
                 else
@@ -80,22 +84,30 @@ export class CartManager {
                     if (productoJSON.stock>0 && productoJSON.stock >= quantity ) //Controlo que no se exceda del stock maximo
                     {
                         carritos[idCart-1].products.push({idProduct,quantity});
+                        await fs.promises.writeFile(this.path, JSON.stringify(carritos));                
+                        return "Item agregado al carrito"
                     }else{
-                        console.error("No hay stock suficiente")
+                        return "No hay stock suficiente"
                     }
                 }
-                await fs.promises.writeFile(this.path, JSON.stringify(carritos));                
             }else{
-                console.error("No existe un producto con el id: "+idProduct)
+                return "No existe un producto con el id: "+idProduct
             }
 
         }else{
-            console.error("No se encuentra el carrito")
+            return "No se encuentra el carrito"
         }
       
 
     }
-
+    getAllCarts= async()=> { //Este no es requerido por la entrega pero lo agrego para el testing de la misma
+        if (this.checkArchivo()){                        
+            let contenido = await fs.promises.readFile(this.path, 'utf-8')  
+            return JSON.parse(contenido);
+        }else{
+            return "No existe el archivo"
+        }
+    }
     getAllCartProducts= async(idCart)=> {
         if (this.checkArchivo()){
             

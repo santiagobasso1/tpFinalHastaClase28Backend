@@ -9,21 +9,45 @@ routerCart.post("/", async (req, res) => {
     if (!manager.checkArchivo()){
         await manager.crearArchivo();
     }
-    await manager.crearCarritoVacio()
-    res.send("Carrito creado")
+    try {        
+        res.send(await manager.crearCarritoVacio())
+    }catch{
+        res.send("Error en el archivo")
+    }
+
 });
 
+routerCart.get("/", async (req, res) => {
+    try{
+        res.send(await manager.getAllCarts())
+    }catch{
+        res.send("Error en el archivo")
+    }
+
+});
+
+
 routerCart.get("/:cid", async (req, res) => {
-    const productos=await manager.getAllCartProducts(parseInt(req.params.cid))
-    res.send(productos)
+    try{
+        const respuesta=await manager.getAllCartProducts(parseInt(req.params.cid))
+        res.send(respuesta)
+    }catch{
+        res.send("Error en el archivo")
+    }
+
 });
 
 
 
 
 routerCart.post("/:cid/product/:pid", async (req, res) => {
-    await manager.addProductToCart(parseInt(req.params.cid),parseInt(req.params.pid),1) //1 porque dice la diapositiva que de a 1 se agregan por ahora
-    res.send("Producto Agregado")
+    try{
+        let respuesta = await manager.addProductToCart(parseInt(req.params.cid),parseInt(req.params.pid),1) //1 porque dice la diapositiva que de a 1 se agregan por ahora
+        res.send(respuesta)
+    }catch{
+        res.send("Error en alguno de los archivos")
+    }
+
 });
 
 
