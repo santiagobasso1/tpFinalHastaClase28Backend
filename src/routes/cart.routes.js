@@ -50,6 +50,19 @@ routerCart.post("/:cid/product/:pid", async (req, res) => {
 
 });
 
+routerCart.delete("/:cid/product/:pid", async (req, res) => {
+    try{
+        let respuesta = await manager.deleteProductById(parseInt(req.params.cid),parseInt(req.params.pid),1) //1 porque dice la diapositiva que de a 1 se agregan por ahora
+        res.send(respuesta)
+    }catch{
+        res.send("Error en alguno de los archivos")
+    }
+
+});
+
+
+
+
 
 
 

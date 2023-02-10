@@ -134,6 +134,28 @@ export class CartManager {
         }
        
     }
+    deleteProductById= async(cid,pid)=> {
+        let contenido = await fs.promises.readFile(this.path, 'utf-8')
+        let arrayCarritos = JSON.parse(contenido)
+        if (arrayCarritos.some(cart => cart.id === cid))
+        {
+            const pos = arrayCarritos.map(carrito => carrito.id).indexOf(cid);
+            let objetoCarrito = arrayCarritos[pos]
+
+            if (objetoCarrito.products.find(product => product.idProduct === pid))
+            {                
+                arrayCarritos[pos].products=objetoCarrito.products.filter(product => product.idProduct != pid)     
+                await fs.promises.writeFile(this.path, JSON.stringify(arrayCarritos))      
+                return "Producto eliminado exitosamente"
+            }else{
+                return "No existe el producto que desea eliminar"
+            }
+        }else{
+            return "No existe el carrito"
+        }
+
+      
+    }
 }
 
 
