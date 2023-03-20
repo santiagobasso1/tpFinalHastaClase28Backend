@@ -1,80 +1,57 @@
 import { Router } from "express";
 const routerProduct = Router();
-import {ProductManager} from "../controllers/ProductManager.js"
-const manager = new ProductManager('src/models/products.json');
+import { ProductManager } from "../dao/FileSystem/models/ProductManager.js";
+import { getManagerProducts } from "../dao/daoManager.js";
+const manager = new ProductManager('src/dao/FileSystem/Files/products.json');
 
 
+const productData = await getManagerProducts()
+const managerProduct = new productData.ManagerProductMongoDB();
 
 routerProduct.get("/", async (req, res) => {
-    // if (!manager.checkArchivo()){
-    //     await manager.cargarArchivo();  //Esto es para cargar el archivo así facilitar su testeo, en caso de  querer cargarlo descomentar y ejecutar el get de la raiz /api/products
-    // }
     try{
-        const products = await manager.getAllProducts();
-        if (products.length>0){
-            let { limit } = req.query;
-            let data;
-            if (!limit) {
-                data = products;
-            } else {
-                data = products.slice(0, parseInt(limit));
-            }
-            res.send(data);
-        }else{
-            res.send("No hay productos en el archivo")
-        }
-    }catch(error){
-        res.send("Probablemente no exista el archivo")
+        let productos = await managerProduct.getElements();
+        res.send(productos)
+    }catch{
+        res.send("Hubo un problema mostrando los productos")
     }
+
 
 
 });
 
 routerProduct.get("/:pid", async (req, res) => {
     try{
-        const product = await manager.getProductById(parseInt(req.params.pid));
-        JSON.stringify(product)
-        if (product){
-            // res.send(JSON.stringify(product)) //En caso de quererlo en formato string
-            res.send(product)
-        }else{
-            res.send("No se encontró el producto")
-        }
+        let respuesta = await managerProduct.getElementById(req.params.pid);
+        res.send(respuesta)
     }catch{
-        res.send("Probablemente el archivo no exista")
+        res.send("No se encontró el producto")
     }
-
 });
 
 routerProduct.post('/', async(req,res)=>{
-    if (!manager.checkArchivo()){
-        await manager.crearArchivo(); 
-    }
     try{
-        res.send(await manager.addProduct(req.body))
+        await managerProduct.addElements(req.body);
+        res.send("Producto Agregado")
     }catch{
-        res.send("Ha ocurrido un error en el archivo")
+        res.send("Hubo un error al agregar el producto")
     }
-
 })
 
 routerProduct.put("/:pid", async (req, res) => {
     try{
-        let respuesta = await manager.updateProduct({id:parseInt(req.params.pid),title:req.body.title,description:req.body.description,price:req.body.price,thumbnail:req.body.thumbnail,code:req.body.code,stock:req.body.stock,status:req.body.status,category:req.body.category})
-        res.send(respuesta)
+        await managerProduct.updateElement(req.params.pid,{title:req.body.title, description:req.body.description, price: req.body.price, thumbnail:req.body.thumbnail, code:req.body.code, stock:req.body.stock,status:req.body.status,category:req.body.category })
+        res.send("Producto Actualizado")
     }catch{
-        res.send("Error en el archivo")
+        res.send("Hubo un error al actualizar el producto");
     }
-
-
 });
-
 routerProduct.delete("/:pid", async(req,res)=>{
     try{
-        let respuesta = await manager.deleteProductById(parseInt(req.params.pid))
-        res.send(respuesta)
+        await managerProduct.deleteElement(req.params.pid)
+        res.send("Producto eliminado");
     }catch{
-        res.send("Error en el archivo")
+        res.send("Hubo un problema al eliminar el producto")
     }
 });
 

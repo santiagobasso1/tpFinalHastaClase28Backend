@@ -1,7 +1,8 @@
 import fs from "fs";
 
 
-
+const rutaArchivoCart = "src/dao/FileSystem/Files/carts.json"
+const rutaArchivoProducts =  "src/dao/FileSystem/Files/products.json"
 class Cart {
     constructor(id, products) {
         this.id = id;
@@ -38,7 +39,7 @@ export class CartManager {
         }
     }
     existsProductById= async(id)=> { //Solamente para comprobar si existe
-        let contenido = await fs.promises.readFile("src/models/products.json", 'utf-8')  
+        let contenido = await fs.promises.readFile(rutaArchivoProducts, 'utf-8')  
         let aux = JSON.parse(contenido)
         let valor=false;
         if(aux.some(product=> product.id === id)) 
@@ -57,7 +58,7 @@ export class CartManager {
         const existe = await this.existsProductById(idProduct)
 
         //Productos para ver el stock maximo
-        let responseAwaitProducts = await fs.promises.readFile("src/models/products.json", 'utf-8')  
+        let responseAwaitProducts = await fs.promises.readFile(rutaArchivoProducts, 'utf-8')  
         let arrayProductosFromJSON = JSON.parse(responseAwaitProducts);
     
 
