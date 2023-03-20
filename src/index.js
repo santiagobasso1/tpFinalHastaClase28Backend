@@ -1,16 +1,17 @@
 import "dotenv/config"
 import express from "express";
 import { Server } from "socket.io";
-import { getManagerMessages, getManagerProducts} from "./dao/daoManager.js";
+import { getmessageManagers, getproductManagers} from "./dao/daoManager.js";
 import { __dirname, __filename } from "./path.js";
 import routerSocket from "./routes/socket.routes.js";
 import routerProduct from "./routes/products.routes.js";
+import routerProductsPaginate from "./routes/productsPaginate.routes.js";
 import routerCart from "./routes/cart.routes.js";
 import { engine } from 'express-handlebars';
 import * as path from 'path'
 import routerChat from "./routes/chat.routes.js";
 const app = express()
-
+import productManager from "./dao/ManagersGeneration/productManager.js";
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -28,8 +29,8 @@ const server = app.listen(app.get("port"), () => console.log(`Server on port ${a
 //Socket.io
 const io = new Server(server)
 //Messages
-const messageData = await getManagerMessages()
-const managerMessage = new messageData.ManagerMessageMongoDB();
+const messageData = await getmessageManagers()
+const messageManager = new messageData.messageManagerMongoDB();
 
 
 
@@ -38,22 +39,27 @@ const managerMessage = new messageData.ManagerMessageMongoDB();
 io.on("connection", async (socket) => {
     console.log("Cliente conectado")
     socket.on("message", async (info) => {
-            managerMessage.addElements([info]).then(() => {
-            managerMessage.getElements().then((mensajes) => {
+            messageManager.addElements([info]).then(() => {
+            messageManager.getElements().then((mensajes) => {
                 socket.emit("allMessages", mensajes)
             })
         })
     })
-    managerMessage.getElements().then((mensajes) => {
+    messageManager.getElements().then((mensajes) => {
         socket.emit("allMessages", mensajes)
     })
-    // managerProduct.getElements().then((products) => {
+
+
+
+
+
+    // productManager.getElements().then((products) => {
     //     socket.emit("getProducts", products)
     // })
     // socket.on("addProduct", async (info) => {
     //     //Si se quiere agregar elementos al archivo, colocar "productManager.devolverArrayProductos()" en lugar de [info]
-    //     managerProduct.addElements([info]).then(() => {
-    //         managerProduct.getElements().then((products) => {
+    //     productManager.addElements([info]).then(() => {
+    //         productManager.getElements().then((products) => {
     //         socket.emit("getProducts", products)
     //     })
     // })
@@ -65,8 +71,8 @@ io.on("connection", async (socket) => {
 
     
     // socket.on("deleteProduct", async id=>{
-    //     managerProduct.deleteElement(id).then(() => {
-    //         managerProduct.getElements().then((products) => {
+    //     productManager.deleteElement(id).then(() => {
+    //         productManager.getElements().then((products) => {
     //         socket.emit("getProducts", products)
     //         })
     //     })
@@ -80,4 +86,4 @@ app.use('/chat', routerChat)
 app.use('/', express.static(__dirname + '/public'))
 app.use('/api/products', routerProduct)
 app.use("/api/carts", routerCart)
-
+// app.use("/products",routerProductsPaginate)

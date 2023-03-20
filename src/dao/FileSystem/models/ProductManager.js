@@ -1,5 +1,5 @@
 // import fs from "fs";
-// import { getManagerProducts } from "../../daoManager.js";
+// import { getproductManagers } from "../../daoManager.js";
 
 
 // class Producto {

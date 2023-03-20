@@ -46,9 +46,25 @@ const productSchema = new Schema({
 
 productSchema.plugin(paginate);
 
-export class ManagerProductMongoDB extends ManagerMongoDB {
+export class productManagerMongoDB extends ManagerMongoDB {
     constructor() {
         super(url, "products", productSchema)
         //Aqui irian los atributos propios de la clase
+    }
+    async paginate(filtro,opciones){
+        this.setConnection();
+        try{
+            return await this.model.paginate(filtro,opciones)
+        }catch(error){
+            return error;
+        }
+    }
+    async aggregate(opciones){
+        this.setConnection();
+        try{
+            return await this.model.aggregate(opciones)
+        }catch(error){
+            return error;
+        }
     }
 }

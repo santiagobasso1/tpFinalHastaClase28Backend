@@ -1,5 +1,9 @@
 import { ManagerMongoDB } from "../../../db/mongoDBManager.js";
 import { Schema } from "mongoose";
+import productManager from "../../ManagersGeneration/productManager.js";
+
+
+
 
 const url = process.env.URLMONGODB
 
@@ -11,7 +15,7 @@ const cartSchema = new Schema({
     }
 })
 
-export class ManagerCartMongoDB extends ManagerMongoDB {
+export class cartManagerMongoDB extends ManagerMongoDB {
     constructor() {
         super(url, "carts", cartSchema)
         //Aqui irian los atributos propios de la clase
@@ -33,21 +37,28 @@ export class ManagerCartMongoDB extends ManagerMongoDB {
     }
 
     async addItemToCart(cid,pid){
-        const cart = await this.getElementById(cid);
-        if (cart.products.length>0){
-            let encontrado = false;
-            cart.products.forEach(producto => {
-                if (producto.productId==pid){
-                    producto.quantity+=1;
-                    encontrado=true;
+        const producto = await productManager.getElementById(pid);
+        if (producto!=undefined){
+            const cart = await this.getElementById(cid);
+            if (cart.products.length>0){
+                let encontrado = false;
+                cart.products.forEach(producto => {
+                    if (producto.productId==pid){
+                        producto.quantity+=1;
+                        encontrado=true;
+                    }
+                });
+                if (!encontrado){
+                    cart.products.push({productId:pid,quantity:1})
                 }
-            });
-            if (!encontrado){
+            }else{
                 cart.products.push({productId:pid,quantity:1})
             }
+            await this.updateElement(cid,cart);
+            return "Producto agregado exitosamente"
         }else{
-            cart.products.push({productId:pid,quantity:1})
+            return "No existe el producto que desea agregar"
         }
-        await this.updateElement(cid,cart);
+        
     }
 }

@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { getManagerProducts } from "../dao/daoManager.js";
+import { getproductManagers } from "../dao/daoManager.js";
 const routerSocket = Router();
-
+import productManager from "../dao/ManagersGeneration/productManager.js";
 
 //Llamo al manager de productos
 
@@ -14,14 +14,15 @@ const routerSocket = Router();
   // })
 
 
-  // routerSocket.get('/realtimeproducts', async(req,res) => {
+  routerSocket.get('/products', async(req,res) => {
     
-  //   const products = await productManager.getAllProducts()
-  //   res.render("realTimeProducts", { 
-  //       titulo: "Practica Integradora Real Time Products",
-  //       products: products
-  //   })
-  // })
+    const products = await productManager.getElements()
+    res.render("productsPaginate", { 
+        titulo: "Practica Integradora Real Time Products",
+        products: products
+    })
+  
+  })
   
 
 export default routerSocket;
