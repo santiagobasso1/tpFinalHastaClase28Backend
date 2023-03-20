@@ -32,13 +32,9 @@ const io = new Server(server)
 //Messages
 const messageData = await getManagerMessages()
 const managerMessage = new messageData.ManagerMessageMongoDB();
-//Products
 
 
 
-// //Carts
-// const cartData = await getManagerCarts()
-// const managerCart = new cartData.ManagerCartMongoDB();
 
 
 io.on("connection", async (socket) => {
