@@ -1,8 +1,6 @@
 import { Router } from "express";
 const routerProduct = Router();
-import { ProductManager } from "../dao/FileSystem/models/ProductManager.js";
 import { getManagerProducts } from "../dao/daoManager.js";
-const manager = new ProductManager('src/dao/FileSystem/Files/products.json');
 
 
 const productData = await getManagerProducts()
@@ -10,20 +8,15 @@ const managerProduct = new productData.ManagerProductMongoDB();
 
 routerProduct.get("/", async (req, res) => {
     try{
-        let productos = await managerProduct.getElements();
-        res.send(productos)
+        res.send(await managerProduct.getElements())
     }catch{
         res.send("Hubo un problema mostrando los productos")
     }
-
-
-
 });
 
 routerProduct.get("/:pid", async (req, res) => {
     try{
-        let respuesta = await managerProduct.getElementById(req.params.pid);
-        res.send(respuesta)
+        res.send(await managerProduct.getElementById(req.params.pid));
     }catch{
         res.send("No se encontró el producto")
     }
@@ -31,7 +24,7 @@ routerProduct.get("/:pid", async (req, res) => {
 
 routerProduct.post('/', async(req,res)=>{
     try{
-        await managerProduct.addElements(req.body);
+        await managerProduct.addElements(req.body); //Hacerle controles
         res.send("Producto Agregado")
     }catch{
         res.send("Hubo un error al agregar el producto")

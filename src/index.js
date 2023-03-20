@@ -9,10 +9,8 @@ import routerCart from "./routes/cart.routes.js";
 import { engine } from 'express-handlebars';
 import * as path from 'path'
 import routerChat from "./routes/chat.routes.js";
-import { ProductManager } from "./dao/FileSystem/models/ProductManager.js";
 const app = express()
 
-const productManager = new ProductManager("src/dao/FileSystem/Files/products.json");
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -82,3 +80,4 @@ app.use('/chat', routerChat)
 app.use('/', express.static(__dirname + '/public'))
 app.use('/api/products', routerProduct)
 app.use("/api/carts", routerCart)
+

@@ -19,7 +19,7 @@ routerCart.post("/", async (req, res) => {
 
 
     try{
-        await managerCart.addElements({products:[]});
+        await managerCart.addElements({products:[]}); //No hice un metodo específico ya que no es necesario
         res.send("Carrito vacio creado")
     }catch{
         res.send("Error al agregar carrito")
@@ -31,7 +31,7 @@ routerCart.post("/", async (req, res) => {
 
 routerCart.get("/:cid", async (req, res) => {
     try{
-        res.send(await managerCart.getElementById(req.params.cid));
+        res.send(await managerCart.getElementById(req.params.cid)); //No hice uno específico para este ya que no es necesario más que solo el get element
     }catch{
         res.send("No se encontró el carrito")
     }
@@ -42,24 +42,8 @@ routerCart.get("/:cid", async (req, res) => {
 
 routerCart.post("/:cid/products/:pid", async (req, res) => {
     //FALTA COMPROBAR QUE EL PRODUCTO EXISTA
-    try{
-        const cart = await managerCart.getElementById(req.params.cid);
-        if (cart.products.length>0){
-            let encontrado = false;
-            cart.products.forEach(producto => {
-                if (producto.productId==req.params.pid){
-                    producto.quantity+=1;
-                    encontrado=true;
-                }
-            });
-            if (!encontrado){
-                cart.products.push({productId:req.params.pid,quantity:1})
-            }
-        }else{
-            cart.products.push({productId:req.params.pid,quantity:1})
-        }
-        //Compruebo que exista en el carrito para agregarle 1 a la cantidad en lugar de agregarle puras veces el mismo producto al mismo carrito
-        await managerCart.updateElement(req.params.cid,cart);
+    try{        
+        await managerCart.addItemToCart(req.params.cid,req.params.pid);
         res.send("Producto Agregado al carrito")
     }catch{
         res.send("Hubo un error al agregar el producto")
@@ -68,27 +52,21 @@ routerCart.post("/:cid/products/:pid", async (req, res) => {
 
 routerCart.delete("/:cid/products/:pid", async (req, res) => {
     try{
-        const cart = await managerCart.getElementById(req.params.cid);
-        const productosFiltrados = cart.products.filter((producto) => producto.productId !== req.params.pid)
-        
-        await managerCart.updateElement(req.params.cid,{products:productosFiltrados});
+        await managerCart.delItemFromCart(req.params.cid,req.params.pid);
         res.send("Producto eliminado");
     }catch{
         res.send("Hubo un error al intentar eliminar el producto del carrito")
     }
-    // try{
-    //     let respuesta = await manager.deleteProductById(parseInt(req.params.cid),parseInt(req.params.pid),1) //1 porque dice la diapositiva que de a 1 se agregan por ahora
-    //     res.send(respuesta)
-    // }catch{
-    //     res.send("Error en alguno de los archivos")
-    // }
-
 });
 
 
-
-
-
-
+routerCart.delete("/:cid", async (req, res) => {
+  try{
+        await managerCart.delCartItems(req.params.cid);
+        res.send("Productos del carrito eliminados")
+    }catch{
+        console.error("Hubo un error al intentar eliminar el carrito")
+    }
+});
 
 export default routerCart
