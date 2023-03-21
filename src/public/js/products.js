@@ -1,65 +1,96 @@
-// const socket = io()
+
+const idCarrito = "64193a74027df4fc25ebc08c"; //Hasta ver forma de como pasar el id 
+async function renderProducts() {
+    try {
+        const response = await fetch('/api/products');
+        const products = await response.json();
+        console.log(products)
+        products.payload.forEach(product => {
+            document.getElementById("productsCard").innerHTML +=
+                `
+                    <div class="card col-sm-2 cardProduct">
+                    <img class="card-img-top imagenCardProducts" src="${product.thumbnail}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">${product.title}</h5>
+                        <p class="card-text">${product.description} </p>
+                        <p class="card-text">Precio: ${product.price} </p>       
+                        <p class="card-text">Stock: ${product.stock} </p>   
+                        <p class="card-text">Code: ${product.code} </p>                                               
+                        <a id="botonProductoEliminar${product._id}" class="btn btn-primary">Eliminar</a>
+                        <a id="botonProductoAddCart${product._id}" class="btn btn-primary">Agregar al Carrito</a>
+
+                    </div>
+                    `
+        })
+        products.payload.forEach(product => {
+            document.getElementById(`botonProductoEliminar${product._id}`).addEventListener("click", async (e) => {
+                const response = await fetch(`/api/products/${product._id}`, {
+                    method: 'DELETE'
+                });
+                document.getElementById("productsCard").innerHTML = ""
+                renderProducts();
+            })
+        })
+        products.payload.forEach(product => {
+            document.getElementById(`botonProductoAddCart${product._id}`).addEventListener("click", async (e) => {
+                const response = await fetch(`/api/carts/${idCarrito}/products/${product._id}`, {
+                    method: 'POST'
+                });
+                document.getElementById("productsCard").innerHTML = ""
+                renderProducts();
+            })
+        })
+        
 
 
-// const form = document.getElementById("realTimeProductsForm")
-// form.addEventListener("submit", (e)=>{
-//     e.preventDefault();
-//     const title = document.getElementById("formTitle")
-//     const description = document.getElementById("formDescription")
-//     const price = document.getElementById("formPrice")
-//     const thumbnail = document.getElementById("formThumbnail")
-//     const code = document.getElementById("formCode")
-//     const stock = document.getElementById("formStock")
-//     const category = document.getElementById("formCategory")
-//     const product = {
-//         title: title.value,
-//         description: description.value,
-//         price: parseFloat(price.value),
-//         thumbnail: [thumbnail.value],
-//         code: code.value,
-//         stock: parseInt(stock.value),
-//         status: true,
-//         category:category.value
-//     }    
-//     if (title.value.length > 0 && description.value.length > 0 && price.value.length > 0 && thumbnail.value.length > 0 && code.value.length > 0 && stock.value.length > 0 && category.value.length > 0){
-//         socket.emit("addProduct", product) 
-//     }else{
-//         console.log("Falta algún dato por llenar")
-//     }
-// })
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function botonEnviar() {
+    const productForm = document.getElementById('productForm');
+
+    productForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const price = parseFloat(document.getElementById('price').value);
+        const thumbnail = [document.getElementById('thumbnail').value];
+        const code = document.getElementById('code').value;
+        const stock = parseInt(document.getElementById('stock').value);
+        const status =true;
+        const category = document.getElementById('category').value;
+
+        const newProduct = {
+            title,
+            description,
+            price,
+            thumbnail,
+            code,
+            stock,
+            status,
+            category,
+        };
+
+        try {
+            const response = await fetch('/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }, //Sin estas lineas no agrega
+                body: JSON.stringify(newProduct),
+            });
+            document.getElementById("productsCard").innerHTML = ""
+            renderProducts(); //Para recargar la pagina
+        } catch (error) {
+            console.log(error);
+        }
+        productForm.reset();
+    });
+}
 
 
-
-// socket.on("getProducts", products =>{
-
-//     document.getElementById("productsCard").innerHTML=""
-
-//     products.forEach(product => {
-//         document.getElementById("productsCard").innerHTML+=  
-//         `
-//         <div class="card col-sm-2 cardProduct">
-//         <img class="card-img-top imagenCardProducts" src="${product.thumbnail}" alt="Card image cap">
-//         <div class="card-body">
-//             <h5 class="card-title">${product.title}</h5>
-//             <p class="card-text">${product.description} </p>
-//             <p class="card-text">Precio: ${product.price} </p>       
-//             <p class="card-text">Stock: ${product.stock} </p>   
-//             <p class="card-text">Code: ${product.code} </p>                                               
-//             <a id="botonProducto${product._id}" class="btn btn-primary">Eliminar</a>
-//         </div>
-//         `
-//     })
-
-
-//     products.forEach(product=>{
-//         document.getElementById(`botonProducto${product._id}`).addEventListener("click",(e)=>{
-//             socket.emit("deleteProduct", product._id) 
-//             socket.on("mensajeProductoEliminado",mensaje=>{
-//                 console.log(mensaje) //Para mostrarle al cliente el mensaje
-//             })
-//         })
-//     })
-// })
-
-
-console.log(products)
+renderProducts();
+botonEnviar();

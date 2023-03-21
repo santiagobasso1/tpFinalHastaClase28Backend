@@ -16,22 +16,37 @@ import productManager from "../dao/ManagersGeneration/productManager.js"
 
 routerProduct.get("/", async (req, res) => {
     let { limit, page, stock, category, sort } = req.query;
+    let resultadoOperaciones = "error";
+    let enlace="/api/products?";
+    let enlaceProximo, enlacePrevio;
     if (limit==undefined){
         limit = 10;
+    }else{
+        enlace=enlace+"limit="+limit+"&"
     }
     if (page==undefined){
         page=1;
+        enlaceProximo=enlace;
+        enlacePrevio=enlace;
+    }else{
+        enlaceProximo=enlace+"page="+(parseInt(page)+1)
+        enlacePrevio=enlace+"page="+(parseInt(page)-1)
     }
+
+
     let resultado;
-    if (stock!=undefined){
+    if (stock!=undefined){        
         resultado = await productManager.paginate({stock:stock},{limit:limit,page:page})
+        resultadoOperaciones="success";
     }else if(category!=undefined){
         resultado = await productManager.paginate({category:category},{limit:limit,page:page})
+        resultadoOperaciones="success";
     }else{
         resultado = await productManager.paginate({},{limit:limit,page:page}) 
+        resultadoOperaciones="success";
     }
     let ordenamiento = 1;
-
+    
 
     if (sort!=undefined){
         if (sort.toLowerCase()=="asc"){
@@ -40,9 +55,22 @@ routerProduct.get("/", async (req, res) => {
             ordenamiento=-1;
         }
         resultado= await productManager.aggregate([{$sort: {price: ordenamiento}}]) //Para cambiar el factor de ordenamiento se cambia el "title" por el campo que se quiere ordenar
+        resultadoOperaciones="success";
     }
-
-    res.send(resultado)
+    
+    const resultadoFinalPayload = {
+        status:resultadoOperaciones, //a
+        payload:resultado.docs,
+        totalPages: resultado.totalPages,
+        prevPage:resultado.prevPage,
+        nextPage:resultado.nextPage,
+        page: resultado.page,
+        hasPrevPage: resultado.hasPrevPage,
+        hasNextPage: resultado.hasNextPage,
+        prevLink:enlacePrevio,
+        nextLink:enlaceProximo
+    }
+    res.send(resultadoFinalPayload)
 });
 
 

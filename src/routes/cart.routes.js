@@ -13,6 +13,27 @@ routerCart.get("/", async (req, res) => {
     }
 });
 
+routerCart.put("/:cid", async (req, res) => {
+
+    try{
+        res.send(await cartManager.updateAllCartItems(req.params.cid,req.body));
+    }catch{
+        res.send("Error al intentar actualizar el carrito")
+    }
+});
+
+
+
+routerCart.put("/:cid/products/:pid", async (req, res) => {
+
+    try{
+        res.send(await cartManager.updateCartItem(req.params.cid,req.params.pid,req.body.quantity));
+    }catch{
+        res.send("Error al intentar actualizar la cantidad")
+    }
+});
+
+
 
 routerCart.post("/", async (req, res) => {
 
@@ -28,12 +49,22 @@ routerCart.post("/", async (req, res) => {
 
 
 
+
 routerCart.get("/:cid", async (req, res) => {
-    try{
-        res.send(await cartManager.getElementById(req.params.cid)); //No hice uno específico para este ya que no es necesario más que solo el get element
-    }catch{
-        res.send("No se encontró el carrito")
-    }
+    // try{
+    //     cartManager.findOne({stock:56})
+    //     .populate('publicaciones')
+    //     .exec((err, autor) => {
+    //     if(err){
+    //         console.log(err);
+    //         process.exit(-1);
+    //     }
+    //     console.log(`Tl autor ${autor.nombre} tiene ${autor.publicaciones.length} publicaciones`);
+    // })
+    //     // res.send(await cartManager.getElementById(req.params.cid)); //No hice uno específico para este ya que no es necesario más que solo el get element
+    // }catch{
+    //     res.send("No se encontró el carrito")
+    // }
 });
 
 
@@ -50,8 +81,7 @@ routerCart.post("/:cid/products/:pid", async (req, res) => {
 
 routerCart.delete("/:cid/products/:pid", async (req, res) => {
     try{
-        await cartManager.delItemFromCart(req.params.cid,req.params.pid);
-        res.send("Producto eliminado");
+        res.send(await cartManager.delItemFromCart(req.params.cid,req.params.pid));
     }catch{
         res.send("Hubo un error al intentar eliminar el producto del carrito")
     }

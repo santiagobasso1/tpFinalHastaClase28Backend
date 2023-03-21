@@ -87,3 +87,5 @@ app.use('/', express.static(__dirname + '/public'))
 app.use('/api/products', routerProduct)
 app.use("/api/carts", routerCart)
 // app.use("/products",routerProductsPaginate)
+
+

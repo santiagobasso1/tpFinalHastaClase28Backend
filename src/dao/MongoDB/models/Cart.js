@@ -8,10 +8,18 @@ import productManager from "../../ManagersGeneration/productManager.js";
 const url = process.env.URLMONGODB
 
 const cartSchema = new Schema({
-    products: {
-        default: [],
-        type: Array,
-        required: true
+    products:{
+        type:[{
+            productId:{
+                type: Schema.Types.ObjectId,
+                ref: "products",
+            },
+            quantity:{
+                type:Number,
+                default:1
+            }
+        }],
+        default:[]
     }
 })
 
@@ -32,33 +40,73 @@ export class cartManagerMongoDB extends ManagerMongoDB {
 
     async delItemFromCart(cid,pid){
         const cart = await this.getElementById(cid);
-        const productosFiltrados = cart.products.filter((producto) => producto.productId !== pid)
-        await this.updateElement(cid,{products:productosFiltrados}); //BORRA TODOS, si tiene 10 en quantity, los borra        
+        let existe = false;
+        cart.products.forEach(producto=>{
+            if (producto.productId == pid){
+                existe=true;
+            }
+        })
+        if (existe){
+            const productosFiltrados = cart.products.filter((producto) => producto.productId != pid)
+            await this.updateElement(cid,{products:productosFiltrados});   
+            return "Producto eliminado" 
+        }else
+        {
+            return "El producto no se encuentra"
+        }
+
     }
 
     async addItemToCart(cid,pid){
-        const producto = await productManager.getElementById(pid);
-        if (producto!=undefined){
+        try{
             const cart = await this.getElementById(cid);
-            if (cart.products.length>0){
-                let encontrado = false;
-                cart.products.forEach(producto => {
-                    if (producto.productId==pid){
-                        producto.quantity+=1;
-                        encontrado=true;
+            const product = await productManager.getElementById(pid);
+            const prodIndex = cart.products.findIndex(product => product.productId.equals(pid));
+            if (product==undefined){
+                return "El producto no existe"
+            }else
+            {
+                if (product.stock>2){
+                    if (prodIndex==-1){
+                        cart.products.push({productId:pid});
+                        product.stock-=1;
+                    }else{
+                        cart.products[prodIndex].quantity+=1;
+                        product.stock-=1;
                     }
-                });
-                if (!encontrado){
-                    cart.products.push({productId:pid,quantity:1})
+                    await product.save();
+                    await cart.save();
+                    return cart;
                 }
-            }else{
-                cart.products.push({productId:pid,quantity:1})
             }
-            await this.updateElement(cid,cart);
-            return "Producto agregado exitosamente"
-        }else{
-            return "No existe el producto que desea agregar"
+
+        }catch(error){
+            return "Problema al agregar el producto"
         }
-        
+
+    }
+
+    async updateAllCartItems(cid, productos){
+        const cart = await this.getElementById(cid);
+        cart.products=productos;
+        cart.save();
+        return "Carrito Actualizado Completamente"
+    }
+
+    async updateCartItem(cid,pid,quantity){
+        let producto = await productManager.getElementById(pid)
+        if (producto.stock>quantity){
+            let cart=await this.getElementById(cid);
+            cart.products.forEach(producto => {
+                if (producto.productId==pid){
+                    producto.quantity=quantity;
+                }
+            });
+            cart.save();
+            return "Cantidad de compra actualizada"
+        }else{
+            return "No se puede agregar mas items que el stock disponible"
+        }
+
     }
 }
