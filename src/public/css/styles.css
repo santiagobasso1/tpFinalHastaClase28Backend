@@ -61,3 +61,18 @@ body{
     width: 100%;
     height: 100px;
 }
+
+.centrarBotones{
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+}
+
+.contenedorBotonesProductCards{
+    display: flex;
+    flex-direction: column;
+}
+
+.botonesProductCards{
+    margin-top: 5px;
+}

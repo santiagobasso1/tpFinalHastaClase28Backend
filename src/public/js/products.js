@@ -1,32 +1,32 @@
 
-const idCarrito = "6419426cfe2e392949f36949"; //Hasta ver forma de como pasar el id 
+
 const urlParams = new URLSearchParams(window.location.search);
-console.log(urlParams)
 
 const limit = urlParams.get('limit');
-const page = urlParams.get('page');
+let page = urlParams.get('page');
 const stock = urlParams.get('stock');
 const category = urlParams.get('category');
 const sort = urlParams.get('sort');
+const idCarrito = urlParams.get('cid');
 
-console.log(limit)
 
-let urlFetch="/api/products?";
-if (limit!=null){
-    urlFetch+="limit="+limit
-}
-if (page!=null && limit!=null){
-    urlFetch+="&page="+page
-}else if (stock!=null && stock >0){
-    urlFetch+="&stock="+stock
-}else if (category!=null){
-    urlFetch+="&category="+category
-}else if (sort!=null && (sort =="asc" || sort=="desc")){
-    urlFetch+="&sort="+sort
-}
-console.log(urlFetch)
+
+
 async function renderProducts() {
     try {
+        let urlFetch = "/api/products?";
+        if (limit != null) {
+            urlFetch += "limit=" + limit
+        }
+        if (page != null) {
+            urlFetch += "&page=" + page
+        } else if (stock != null && stock > 0) {
+            urlFetch += "&stock=" + stock
+        } else if (category != null) {
+            urlFetch += "&category=" + category
+        } else if (sort != null && (sort == "asc" || sort == "desc")) {
+            urlFetch += "&sort=" + sort
+        }
         const response = await fetch(urlFetch);
         const products = await response.json();
         console.log(products)
@@ -40,9 +40,11 @@ async function renderProducts() {
                         <p class="card-text">${product.description} </p>
                         <p class="card-text">Precio: ${product.price} </p>       
                         <p class="card-text">Stock: ${product.stock} </p>   
-                        <p class="card-text">Code: ${product.code} </p>                                               
-                        <a id="botonProductoEliminar${product._id}" class="btn btn-primary">Eliminar</a>
-                        <a id="botonProductoAddCart${product._id}" class="btn btn-primary">Agregar al Carrito</a>
+                        <p class="card-text">Code: ${product.code} </p>   
+                        <div class="contenedorBotonesProductCards">                                            
+                            <a id="botonProductoEliminar${product._id}" class="botonesProductCards btn btn-primary">Eliminar</a>
+                            <a id="botonProductoAddCart${product._id}" class="botonesProductCards btn btn-primary">Agregar al Carrito</a>
+                        </div>
                     </div>
                     `
         })
@@ -64,6 +66,23 @@ async function renderProducts() {
                 renderProducts();
             })
         })
+        document.getElementById("contenedorBotonesPaginas").innerHTML = ""
+        for (let i = 1; i <= products.totalPages; i++) {
+            document.getElementById("contenedorBotonesPaginas").innerHTML += `
+            <a id="botonPagina${i}" class="btn btn-primary">${i}</a>
+            `
+        }
+        for (let i = 1; i <= products.totalPages; i++) {
+            document.getElementById(`botonPagina${i}`).addEventListener("click", (e) => {
+                e.preventDefault();
+                page = i;
+                document.getElementById("productsCard").innerHTML = ""
+                renderProducts();
+
+            })
+        }
+
+
     } catch (error) {
         console.error(error);
     }
@@ -81,7 +100,7 @@ async function botonEnviar() {
         const thumbnail = [document.getElementById('thumbnail').value];
         const code = document.getElementById('code').value;
         const stock = parseInt(document.getElementById('stock').value);
-        const status =true;
+        const status = true;
         const category = document.getElementById('category').value;
 
         const newProduct = {
