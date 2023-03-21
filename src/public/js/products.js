@@ -1,8 +1,33 @@
 
 const idCarrito = "6419426cfe2e392949f36949"; //Hasta ver forma de como pasar el id 
+const urlParams = new URLSearchParams(window.location.search);
+console.log(urlParams)
+
+const limit = urlParams.get('limit');
+const page = urlParams.get('page');
+const stock = urlParams.get('stock');
+const category = urlParams.get('category');
+const sort = urlParams.get('sort');
+
+console.log(limit)
+
+let urlFetch="/api/products?";
+if (limit!=null){
+    urlFetch+="limit="+limit
+}
+if (page!=null && limit!=null){
+    urlFetch+="&page="+page
+}else if (stock!=null && stock >0){
+    urlFetch+="&stock="+stock
+}else if (category!=null){
+    urlFetch+="&category="+category
+}else if (sort!=null && (sort =="asc" || sort=="desc")){
+    urlFetch+="&sort="+sort
+}
+console.log(urlFetch)
 async function renderProducts() {
     try {
-        const response = await fetch('/api/products');
+        const response = await fetch(urlFetch);
         const products = await response.json();
         console.log(products)
         products.payload.forEach(product => {
@@ -18,7 +43,6 @@ async function renderProducts() {
                         <p class="card-text">Code: ${product.code} </p>                                               
                         <a id="botonProductoEliminar${product._id}" class="btn btn-primary">Eliminar</a>
                         <a id="botonProductoAddCart${product._id}" class="btn btn-primary">Agregar al Carrito</a>
-
                     </div>
                     `
         })
@@ -40,9 +64,6 @@ async function renderProducts() {
                 renderProducts();
             })
         })
-        
-
-
     } catch (error) {
         console.error(error);
     }

@@ -3,14 +3,6 @@ const routerProduct = Router();
 import { getproductManagers } from "../dao/daoManager.js";
 import productManager from "../dao/ManagersGeneration/productManager.js"
 
-// routerProduct.get("/", async (req, res) => {
-
-//     try{
-//         res.send(await productManager.getElements())
-//     }catch{
-//         res.send("Hubo un problema mostrando los productos")
-//     }
-// });
 
 
 
