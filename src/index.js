@@ -3,9 +3,8 @@ import express from "express";
 import { Server } from "socket.io";
 import { getmessageManagers, getproductManagers} from "./dao/daoManager.js";
 import { __dirname, __filename } from "./path.js";
-import routerSocket from "./routes/socket.routes.js";
+import rutasEnInicio from "./routes/rutasEnInicio.routes.js";
 import routerProduct from "./routes/products.routes.js";
-import routerProductsPaginate from "./routes/productsPaginate.routes.js";
 import routerCart from "./routes/cart.routes.js";
 import { engine } from 'express-handlebars';
 import * as path from 'path'
@@ -81,7 +80,7 @@ io.on("connection", async (socket) => {
 })
 
 //Routes
-app.use('/', routerSocket)
+app.use('/', rutasEnInicio)
 app.use('/chat', routerChat)
 app.use('/', express.static(__dirname + '/public'))
 app.use('/api/products', routerProduct)

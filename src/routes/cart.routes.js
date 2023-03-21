@@ -14,7 +14,6 @@ routerCart.get("/", async (req, res) => {
 });
 
 routerCart.put("/:cid", async (req, res) => {
-
     try{
         res.send(await cartManager.updateAllCartItems(req.params.cid,req.body));
     }catch{
@@ -51,20 +50,15 @@ routerCart.post("/", async (req, res) => {
 
 
 routerCart.get("/:cid", async (req, res) => {
-    // try{
-    //     cartManager.findOne({stock:56})
-    //     .populate('publicaciones')
-    //     .exec((err, autor) => {
-    //     if(err){
-    //         console.log(err);
-    //         process.exit(-1);
-    //     }
-    //     console.log(`Tl autor ${autor.nombre} tiene ${autor.publicaciones.length} publicaciones`);
-    // })
-    //     // res.send(await cartManager.getElementById(req.params.cid)); //No hice uno específico para este ya que no es necesario más que solo el get element
-    // }catch{
-    //     res.send("No se encontró el carrito")
-    // }
+    try{
+        const cart = await cartManager.getElementById(req.params.cid)
+        const cartPopulate = await cart.populate({path:'products.productId',model:cartManager.productModel})        
+        res.send(cartPopulate)
+    }catch (error){
+        console.error(error)
+        res.send(error)
+    }
+
 });
 
 

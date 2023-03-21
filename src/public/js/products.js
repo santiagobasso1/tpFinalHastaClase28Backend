@@ -1,5 +1,5 @@
 
-const idCarrito = "64193a74027df4fc25ebc08c"; //Hasta ver forma de como pasar el id 
+const idCarrito = "6419426cfe2e392949f36949"; //Hasta ver forma de como pasar el id 
 async function renderProducts() {
     try {
         const response = await fetch('/api/products');
