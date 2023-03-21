@@ -54,10 +54,10 @@ routerProduct.get("/", async (req, res) => {
         }else if(sort.toLocaleLowerCase()=="desc"){
             ordenamiento=-1;
         }
-        resultado= await productManager.aggregate([{$sort: {price: ordenamiento}}]) //Para cambiar el factor de ordenamiento se cambia el "title" por el campo que se quiere ordenar
+        
+        resultado={docs:await productManager.aggregate([{$sort: {price: ordenamiento}}])}  //Para cambiar el factor de ordenamiento se cambia el "title" por el campo que se quiere ordenar
         resultadoOperaciones="success";
     }
-    
     const resultadoFinalPayload = {
         status:resultadoOperaciones, //a
         payload:resultado.docs,
