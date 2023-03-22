@@ -18,7 +18,7 @@ rutasEnInicio.get('/products', async (req, res) => {
 })
 
 
-rutasEnInicio.get('/cart/:cid', async (req, res) => {
+rutasEnInicio.get('/carts/:cid', async (req, res) => {
   const resultado = await cartManager.getElementById(req.params.cid)
   if (resultado!=undefined){
     res.send(resultado);
