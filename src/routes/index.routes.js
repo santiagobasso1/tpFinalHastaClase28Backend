@@ -25,7 +25,8 @@ router.get('/products', loginControl, async (req, res) => {
     res.render("productsPaginate", {
         titulo: "TP Final Santiago Basso",
         nombreUsuario: req.session.first_name,
-        apellidoUsuario: req.session.last_name
+        apellidoUsuario: req.session.last_name,
+        role: req.session.role
     })
 
 })
