@@ -1,5 +1,8 @@
 
-
+.tituloProductsPaginate{
+    text-align: center;
+    margin-top: 10px;
+}
 footer{
     background-color: red;
     display: flex;

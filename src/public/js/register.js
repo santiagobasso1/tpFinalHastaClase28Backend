@@ -20,7 +20,6 @@ botonRegistro.addEventListener("click",async(e)=>{
             });
             try{
                 const userFromResponse = await response.json();
-                console.log(userFromResponse)
                 mensajeRegistro.innerText = "Error, posiblemente el mail ya esté en uso"
             }catch{
                 const newUser= {
@@ -39,6 +38,7 @@ botonRegistro.addEventListener("click",async(e)=>{
                     body: JSON.stringify(newUser),
                 });
                 mensajeRegistro.innerText = "Usuario creado correctamente"
+                window.location.href = "/api/session/login"
 
             }
         }
@@ -79,4 +79,7 @@ document.getElementById("userAge").addEventListener("click",()=>{
 })
 
 
-
+document.getElementById("goToLogin").addEventListener("click",(e)=>{
+    e.preventDefault();
+    window.location.href = "/api/session/login"
+})

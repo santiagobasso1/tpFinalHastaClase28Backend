@@ -29,7 +29,6 @@ async function renderProducts() {
         }
         const response = await fetch(urlFetch);
         const products = await response.json();
-        console.log(products)
         products.payload.forEach(product => {
             document.getElementById("productsCard").innerHTML +=
                 `

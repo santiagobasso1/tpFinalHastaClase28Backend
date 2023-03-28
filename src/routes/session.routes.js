@@ -1,6 +1,10 @@
 import { Router } from "express";
 import userManager from "../dao/ManagersGeneration/userManager.js";
+import { loginTest } from "../dao/ManagersGeneration/sessionManager.js";
 const routerSession = Router()
+
+
+
 
 routerSession.get('/login', async (req, res) => {
     res.render("login", {
@@ -9,22 +13,7 @@ routerSession.get('/login', async (req, res) => {
 })
 
 routerSession.post("/testLogin", async (req, res) => {
-    const {email,password} = req.body;
-    try {
-        if (await userManager.checkLogin(email,password)== "Login exitoso"){ 
-            req.session.login = true
-            res.redirect('/products')
-        } else {
-            res.redirect("/api/session/login", 500, {
-                "message":"Login incorrecto"
-            })
-        }
-
-    } catch (error) {
-        res.status(500).json({
-            message: error.message
-        })
-    }
+    loginTest(req,res)
 })
 
 
@@ -32,7 +21,7 @@ routerSession.get("/logout", (req, res) => {
     if (req.session.login) {
         req.session.destroy()
     }
-    res.redirect(200,'/api/session/login', { //REVISAR
+    res.redirect(200,'/api/session/login', { 
         'divMessage': "Hola"
     })
 })

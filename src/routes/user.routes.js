@@ -3,12 +3,11 @@ import userManager from "../dao/ManagersGeneration/userManager.js";
 const routerUser = Router()
 
 routerUser.post("/", async(req,res)=>{
-    res.redirect("/products")
-    // if(await userManager.createUser(req,res)=="Usuario Agregado"){
-    //     res.redirect('api/session/login')
-    // }else{
-    //     console.error("Usuario no agregado")
-    // }
+    if(await userManager.createUser(req,res)=="Usuario Agregado"){
+        res.redirect('api/session/login')
+    }else{
+        console.error("Usuario no agregado")
+    }
     
     
 })

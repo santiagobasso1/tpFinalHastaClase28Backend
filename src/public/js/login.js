@@ -15,9 +15,15 @@ botonLogin.addEventListener("click",async(e)=>{
             body: JSON.stringify(datosLogin),            
         });
         location.href = response.url;
-        console.log(response)
     }
     catch(error){
         return error
     }
+})
+
+
+
+document.getElementById("goToRegister").addEventListener("click",(e)=>{
+    e.preventDefault();
+    window.location.href = "/user/register"
 })

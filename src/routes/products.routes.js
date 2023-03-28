@@ -1,12 +1,10 @@
 import { Router } from "express";
 const routerProduct = Router();
-import { getproductManagers } from "../dao/daoManager.js";
 import productManager from "../dao/ManagersGeneration/productManager.js"
 
 
-
-
 routerProduct.get("/", async (req, res) => {
+
     let { limit, page, stock, category, sort } = req.query;
     let resultadoOperaciones = "error";
     let enlace="/api/products?";
