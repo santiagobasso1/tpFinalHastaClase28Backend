@@ -12,7 +12,7 @@ botonLogin.addEventListener("click",async(e)=>{
             headers: {
                 'Content-Type': 'application/json',
             }, 
-            body: JSON.stringify(datosLogin),            
+            body: JSON.stringify(datosLogin),          
         });
         location.href = response.url;
     }

@@ -15,7 +15,7 @@ botonChat.addEventListener("click", (e) => {
         const newMessage={
             nombre:nombreUsuario.value,
             email: emailUsuario.value,
-            message: mensaje.value
+            message: mensaje.value  
         }
         mensaje.value="";
         socket.emit("message", newMessage)
