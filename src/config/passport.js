@@ -83,7 +83,6 @@ const initializePassport = () => {
                     age: 23,
                     password: passwordHash //Contraseña por default ya que no puedo accder a la contraseña de github
                 }])
-                console.log(userCreated)
                 done(null, userCreated)
             }
 
