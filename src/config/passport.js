@@ -74,7 +74,7 @@ const initializePassport = () => {
 
             if (user) { //Usuario ya existe en BDD
                 done(null, user)
-            } else {
+            } else { //Esto para que pueda probarlo sin miedo a que se guarden sus credenciales
                 const passwordHash = createHash('coder123')
                 const userCreated = await userManager.addElements([{
                     first_name: profile._json.name,
