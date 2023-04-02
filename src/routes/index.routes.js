@@ -4,6 +4,7 @@ import routerChat from "./chat.routes.js";
 import routerProduct from "./products.routes.js";
 import routerCart from "./cart.routes.js";
 import routerUser from "./user.routes.js";
+import routerGithub from "./github.routes.js";
 import express from "express";
 import { __dirname } from "../path.js";
 import { loginControl } from "../dao/ManagersGeneration/sessionManager.js";
@@ -18,15 +19,30 @@ router.use('/api/products', loginControl, routerProduct)
 router.use('/api/carts', loginControl, routerCart)
 router.use('/user', routerUser)
 router.use('/api/session/', routerSession)
+router.use('/authSession', routerGithub)
 router.use('/', express.static(__dirname + '/public'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //Rutas en inicio
 router.get('/products', loginControl, async (req, res) => {
     res.render("productsPaginate", {
         titulo: "TP Final Santiago Basso",
-        nombreUsuario: req.session.first_name,
-        apellidoUsuario: req.session.last_name,
-        role: req.session.role
+        nombreUsuario: req.session.user.first_name,
+        apellidoUsuario: req.session.user.last_name,
     })
 
 })

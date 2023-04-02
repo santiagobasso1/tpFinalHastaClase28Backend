@@ -1,6 +1,7 @@
 import "dotenv/config"
 import express from "express";
 import { Server } from "socket.io";
+import passport from "passport";
 import { getmessageManagers, getproductManagers} from "./dao/daoManager.js";
 import { __dirname, __filename } from "./path.js";
 import session from 'express-session'
@@ -10,7 +11,7 @@ import * as path from 'path'
 import MongoStore from 'connect-mongo'
 import cookieParser from 'cookie-parser'
 import router from "./routes/index.routes.js";
-
+import initializePassport from "./config/passport.js";
 
 
 const app = express()
@@ -39,6 +40,12 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({ storage: storage })
+
+//Passport
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 //Handlebars
 app.engine("handlebars", engine());
