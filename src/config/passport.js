@@ -69,7 +69,7 @@ const initializePassport = () => {
     }, async (accessToken, refreshToken, profile, done) => {
 
         try {
-            //console.log(profile)
+            console.log(profile)
             const user = await userManager.getElementByEmail(profile._json.email)
 
             if (user) { //Usuario ya existe en BDD
@@ -83,7 +83,7 @@ const initializePassport = () => {
                     age: 23,
                     password: passwordHash //Contraseña por default ya que no puedo accder a la contraseña de github
                 }])
-
+                console.log(userCreated)
                 done(null, userCreated)
             }
 
@@ -94,11 +94,8 @@ const initializePassport = () => {
 
     //Iniciar la session del usuario
     passport.serializeUser((user, done) => {
-        if (Array.isArray(user)) {
-            done(null, user[0]._id)
-        }
-        done(null, user._id)
-    })
+        done(null, user); // serializar todo el objeto de usuario en la sesión
+      });
 
     //Eliminar la sesion del usuario
     passport.deserializeUser(async (id, done) => {

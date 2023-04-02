@@ -68,7 +68,7 @@ export class ManagerUserMongoDB extends ManagerMongoDB {
         //     console.error(error)
         //     return error;
         // }
-        return "Usuario creado correctamente"
+        return "Usuario agregado"
     }
 
     async checkLogin(email,password){

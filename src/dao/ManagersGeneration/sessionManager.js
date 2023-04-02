@@ -34,5 +34,5 @@ export const loginTest = async(req,res)=>{
 
 
 export const loginControl = (req, res, next) => {
-    req.session.login ? next() : res.redirect('/authSession/github')
+    req.session.login ? next() : res.redirect('/authSession/githubSession')
 }
