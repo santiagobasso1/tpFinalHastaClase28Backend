@@ -14,7 +14,7 @@ botonLogin.addEventListener("click",async(e)=>{
             }, 
             body: JSON.stringify(datosLogin),          
         });
-        location.href = response.url;
+        window.location.href = "/products"
     }
     catch(error){
         return error

@@ -17,7 +17,7 @@ const initializePassport = () => {
             const { first_name, last_name, email, age } = req.body
             try {
                 const user = await userManager.getElementByEmail(username) //Username = email
-
+                
                 if (user) { //Usario existe
                     return done(null, false) //null que no hubo errores y false que no se creo el usuario
 
@@ -69,7 +69,7 @@ const initializePassport = () => {
     }, async (accessToken, refreshToken, profile, done) => {
 
         try {
-            console.log(profile)
+
             const user = await userManager.getElementByEmail(profile._json.email)
 
             if (user) { //Usuario ya existe en BDD
@@ -84,6 +84,7 @@ const initializePassport = () => {
                     password: passwordHash //Contraseña por default ya que no puedo accder a la contraseña de github
                 }])
                 done(null, userCreated)
+  
             }
 
         } catch (error) {

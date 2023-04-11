@@ -7,14 +7,15 @@ export const loginTest = async(req,res)=>{
     try {
         if (await userManager.checkLogin(email,password)== "Login exitoso"){ 
             const usuario = await userManager.getElementByEmail(email);
-            req.session.first_name = usuario.first_name; //Para mostrar el nombre y el apellido, no mas datos ya que me parece mejor que sean personales y no mostrarlos 
-            req.session.last_name = usuario.last_name;
-            req.session.role = usuario.rol;
-            req.session.login = true           
+            req.session.user.first_name = usuario.first_name; //Para mostrar el nombre y el apellido, no mas datos ya que me parece mejor que sean personales y no mostrarlos 
+            req.session.user.last_name = usuario.last_name;
+            req.session.user.role = usuario.rol;
+            req.session.login = true        
+            console.log(req.session)   
             if (usuario.rol.toLowerCase() == "admin"){
                 res.redirect('/products')
             }else if (usuario.rol.toLowerCase()=="user"){ 
-                res.redirect('/products')//Se podría renderizar algo diferente en caso de ser administrador, no se puede registrar desde el programa como admin
+                res.redirect('/api/products')           //Se podría renderizar algo diferente en caso de ser administrador, no se puede registrar desde el programa como admin
             }else {
                 console.error("Rol no valido")
             }

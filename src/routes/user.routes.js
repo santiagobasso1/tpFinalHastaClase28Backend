@@ -16,11 +16,10 @@ const routerUser = Router()
 
 routerUser.post("/register",passport.authenticate('register'), async(req,res)=>{
     const mensaje = await userManager.createUser(req,res)
-    if(mensaje=="Usuario Agregado"){
-        res.redirect('auhtSession/github')
-    }else{
-        console.error(mensaje)
-    }
+
+    req.session.user=req.body.first_name;
+    req.session.login = true;
+    res.redirect("/products")
 })
 
 
