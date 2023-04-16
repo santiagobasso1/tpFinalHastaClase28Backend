@@ -21,6 +21,9 @@ router.use('/user', routerUser)
 router.use('/api/session/', routerSession)
 router.use('/authSession', routerGithub)
 router.use('/', express.static(__dirname + '/public'))
+router.use('*',(req,res)=>{
+    res.status(404).send({error:"404 No se encuentra la pagina solicitada"})
+})
 
 
 

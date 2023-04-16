@@ -1,9 +1,18 @@
-import { Router } from "express";
+import { Router, response } from "express";
 import userManager from "../dao/ManagersGeneration/userManager.js";
 import { loginTest } from "../dao/ManagersGeneration/sessionManager.js";
+import passport from "passport";
+import { passportError, roleVerification } from "../utils/errorMessages.js";
 const routerSession = Router()
 
 
+routerSession.get("testJWT", passport.authenticate('jwt', { session: false }, (req, res) => {
+    res.send({ "message": "tokenJWT" })
+}))
+
+routerSession.get("/current", passportError('jwt'), roleVerification('User'), (req, res) => {
+    res.send(req.user)
+})
 
 
 routerSession.get('/login', async (req, res) => {
