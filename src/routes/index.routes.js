@@ -16,14 +16,16 @@ const router = Router();
 
 
 router.use('/chat', loginControl, routerChat)
-router.use('/api/products', loginControl, routerProduct)
-router.use('/api/carts', loginControl, routerCart)
+router.use('/api/products', routerProduct)
+router.use('/api/carts', routerCart)
 router.use('/user', routerUser)
 router.use('/api/session/', routerSession)
 router.use('/authSession', routerGithub)
 router.use('/', express.static(__dirname + '/public'))
 // router.use("",routerPoliticas)
 
+
+//Si no lo comento al momento de redirigirme a la otra pagina, no funciona
 // router.use('*',(req,res)=>{ //Se pone get si se quiere solo mostrar para get, como usamos postman ponemos * por si se prueba con postman
 //     res.status(404).send({error:"404 No se encuentra la pagina solicitada"})
 // })
@@ -59,7 +61,7 @@ router.get('/products', async (req, res) => {
 
 })
 
-router.get('/carts/:cid', loginControl, async (req, res) => {
+router.get('/carts/:cid', async (req, res) => {
     const resultado = await cartManager.getElementById(req.params.cid)
     if (resultado != undefined) {
         res.send(resultado);
@@ -71,7 +73,7 @@ router.get('/carts/:cid', loginControl, async (req, res) => {
 
 
 
-router.get('/productsGet',loginControl, async (req, res) => {
+router.get('/productsGet', async (req, res) => {
 
     const products = await productManager.getElements()
     res.json(products)

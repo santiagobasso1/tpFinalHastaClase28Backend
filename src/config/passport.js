@@ -61,7 +61,7 @@ const initializePassport = () => {
                     rol: "User",
                     idCart: carrito[0]._id
                 }])
-                const token = generateToken(userCreated)                
+
                 console.log(token)
                 return done(null, userCreated) //Usuario creado correctamente
 
@@ -72,6 +72,7 @@ const initializePassport = () => {
         }
 
     ))
+
 
     passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (username, password, done) => {
 
