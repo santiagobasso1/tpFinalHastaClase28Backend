@@ -10,7 +10,7 @@ routerSession.get("testJWT", passport.authenticate('jwt', { session: false }, (r
     res.send({ "message": "tokenJWT" })
 }))
 
-routerSession.get("/current", passportError('jwt'), roleVerification('User'), (req, res) => {
+routerSession.get("/current", passportError('jwt'), roleVerification(['User']), (req, res) => {
     res.send(req.user)
 })
 
@@ -23,7 +23,7 @@ routerSession.get('/login', async (req, res) => {
     })
 })
 
-routerSession.post("/testLogin", async (req, res) => {
+routerSession.post("/testLogin",passport.authenticate('login') ,async (req, res) => {
     loginTest(req,res)
 })
 

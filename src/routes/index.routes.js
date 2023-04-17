@@ -10,6 +10,7 @@ import { __dirname } from "../path.js";
 import { loginControl } from "../dao/ManagersGeneration/sessionManager.js";
 import cartManager from "../dao/ManagersGeneration/cartManager.js";
 import productManager from "../dao/ManagersGeneration/productManager.js";
+import routerPoliticas from "./politicas.routes.js";
 const router = Router();
 
 
@@ -21,9 +22,11 @@ router.use('/user', routerUser)
 router.use('/api/session/', routerSession)
 router.use('/authSession', routerGithub)
 router.use('/', express.static(__dirname + '/public'))
-router.use('*',(req,res)=>{
-    res.status(404).send({error:"404 No se encuentra la pagina solicitada"})
-})
+// router.use("",routerPoliticas)
+
+// router.use('*',(req,res)=>{ //Se pone get si se quiere solo mostrar para get, como usamos postman ponemos * por si se prueba con postman
+//     res.status(404).send({error:"404 No se encuentra la pagina solicitada"})
+// })
 
 
 
@@ -41,12 +44,18 @@ router.use('*',(req,res)=>{
 
 
 //Rutas en inicio
-router.get('/products', loginControl, async (req, res) => {
-    res.render("productsPaginate", {
-        titulo: "TP Final Santiago Basso",
-        nombreUsuario: req.session.user.first_name,
-        apellidoUsuario: req.session.user.last_name,
-    })
+router.get('/products', async (req, res) => {
+    if (req.session.user){
+        res.render("productsPaginate", {
+            titulo: "TP Final Santiago Basso",
+            
+            nombreUsuario: req.session.user.first_name,
+            apellidoUsuario: req.session.user.last_name,
+        })
+    }else{
+        res.redirect('/api/session/login')
+    }
+
 
 })
 

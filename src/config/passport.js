@@ -51,15 +51,17 @@ const initializePassport = () => {
                 }
 
                 const passwordHash = createHash(password)
-
+                const carrito = await cartManager.addElements({products:[]});
                 const userCreated = await userManager.addElements([{
                     first_name: first_name,
                     last_name: last_name,
                     email: email,
                     age: age,
-                    password: passwordHash
+                    password: passwordHash,
+                    rol: "User",
+                    idCart: carrito[0]._id
                 }])
-                const token = generateToken(userCreated)
+                const token = generateToken(userCreated)                
                 console.log(token)
                 return done(null, userCreated) //Usuario creado correctamente
 

@@ -3,31 +3,22 @@ import { validatePassword } from "../../utils/bcrypt.js";
 
 
 export const loginTest = async(req,res)=>{
-    const {email,password} = req.body;
     try {
-        if (await userManager.checkLogin(email,password)== "Login exitoso"){ 
-            const usuario = await userManager.getElementByEmail(email);
-            req.session.user.first_name = usuario.first_name; //Para mostrar el nombre y el apellido, no mas datos ya que me parece mejor que sean personales y no mostrarlos 
-            req.session.user.last_name = usuario.last_name;
-            req.session.user.role = usuario.rol;
-            req.session.login = true        
-            console.log(req.session)   
-            if (usuario.rol.toLowerCase() == "admin"){
-                res.redirect('/products')
-            }else if (usuario.rol.toLowerCase()=="user"){ 
-                res.redirect('/api/products')           //Se podría renderizar algo diferente en caso de ser administrador, no se puede registrar desde el programa como admin
-            }else {
-                console.error("Rol no valido")
-            }
-
-        } else {
-            res.redirect("/api/session/login", 500, {
-                message:"Login incorrecto"
-            })
+        if (!req.user) {
+            return res.status(401).send({ status: "error", error: "Invalidate User" })
         }
-    
+        //Genero la session de mi usuario
+        req.session.user = {
+            first_name: req.user.first_name,
+            last_name: req.user.last_name,
+            age: req.user.age,
+            email: req.user.email
+        }
+        console.log(req.session.user)
+        res.status(200).send({ status: "success", payload: req.user })
+
     } catch (error) {
-        res.status(500).json({
+        res.status(500).send.json({
             message: error.message
         })
     }
@@ -35,5 +26,5 @@ export const loginTest = async(req,res)=>{
 
 
 export const loginControl = (req, res, next) => {
-    req.session.login ? next() : res.redirect('/authSession/githubSession')
+    req.session.login ? next() : res.redirect('/api/session/login')
 }

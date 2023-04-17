@@ -34,17 +34,15 @@ routerCart.put("/:cid/products/:pid", async (req, res) => {
 
 
 
-routerCart.post("/", async (req, res) => {
-
-
-    try{
-        await cartManager.addElements({products:[]}); //No hice un metodo específico ya que no es necesario
-        res.send("Carrito vacio creado")
-    }catch{
-        res.send("Error al agregar carrito")
-    }
-});
-
+// routerCart.post("/", async (req, res) => {
+//     try{
+//         await cartManager.addElements({products:[]}); //No hice un metodo específico ya que no es necesario
+//         res.send("Carrito vacio creado")
+//     }catch{
+//         res.send("Error al agregar carrito")
+//     }
+// });
+//COMENTADO PORQUE YA NO GENERAMOS CARRITO SOLO, GENERAMOS CON UNA PERSONA ASOCIADA
 
 
 
