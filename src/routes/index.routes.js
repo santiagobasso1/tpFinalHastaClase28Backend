@@ -15,7 +15,7 @@ const router = Router();
 
 
 
-router.use('/chat', loginControl, routerChat)
+router.use('/chat', routerChat)
 router.use('/api/products', routerProduct)
 router.use('/api/carts', routerCart)
 router.use('/user', routerUser)

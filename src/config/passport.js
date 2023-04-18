@@ -61,6 +61,7 @@ const initializePassport = () => {
                     rol: "User",
                     idCart: carrito[0]._id
                 }])
+                const token = generateToken(user)
 
                 console.log(token)
                 return done(null, userCreated) //Usuario creado correctamente
