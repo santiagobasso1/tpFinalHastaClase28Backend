@@ -11,10 +11,12 @@ import { loginControl } from "../dao/ManagersGeneration/sessionManager.js";
 import cartManager from "../dao/ManagersGeneration/cartManager.js";
 import productManager from "../dao/ManagersGeneration/productManager.js";
 import routerPoliticas from "./politicas.routes.js";
+import { passportError, roleVerification } from "../utils/errorMessages.js";
 const router = Router();
 
 
-
+//SI EL TOKEN SE GUARDARA EN LA COOKIE COMO QUERÍA, PODRÍA USAR LA VERIFICACIÓN POR AUTH DE LA COOKIE CON ESTOS 2 MIDDLEWARE
+//passportError('jwt'), roleVerification(["User"])
 router.use('/chat', routerChat)
 router.use('/api/products', routerProduct)
 router.use('/api/carts', routerCart)
@@ -22,7 +24,7 @@ router.use('/user', routerUser)
 router.use('/api/session/', routerSession)
 router.use('/authSession', routerGithub)
 router.use('/', express.static(__dirname + '/public'))
-// router.use("",routerPoliticas)
+router.use('/politicas', routerPoliticas)
 
 
 //Si no lo comento al momento de redirigirme a la otra pagina, no funciona

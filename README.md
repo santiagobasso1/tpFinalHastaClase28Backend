@@ -49,3 +49,15 @@ http://localhost:5000/user/register [POST]
 http://localhost:5000/user/register [GET]
 http://localhost:5000/user/email/:email [GET] 
 ```
+### Politicas:
+```
+http://localhost:5000/politicas/public [GET]
+http://localhost:5000/politicas/autenticado [GET]
+http://localhost:5000/politicas/premium [GET]
+```
+### Otras rutas:
+```
+http://localhost:5000/products [GET]
+http://localhost:5000/carts/:cid [GET]
+http://localhost:5000/productsGet [GET]
+```
